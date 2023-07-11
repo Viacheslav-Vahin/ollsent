@@ -265,6 +265,8 @@ async function saveCandidate(authToken, firstName, lastName, contacts = [], allI
         if (!response.ok) {
             throw new Error('Failed to fetch candidate');
         }
+        let responseBody = await response.text();
+        console.log(responseBody);
         candidate = await response.json();
         const updateResponse = await fetch(`https://crm.ollsent.tech/wp-json/wp/v2/candidate/${candidateId}`, {
             method: 'PUT',
@@ -274,7 +276,7 @@ async function saveCandidate(authToken, firstName, lastName, contacts = [], allI
             })
         });
         if (!updateResponse.ok) {
-            throw new Error('Failed to update candidate');
+            throw new Error(`Failed to update candidate ${response.status}`);
         }
         candidate = await updateResponse.json();
         console.log('candidateId: ', candidateId);
@@ -290,8 +292,10 @@ async function saveCandidate(authToken, firstName, lastName, contacts = [], allI
         if (!response.ok) {
             let responseBody = await response.text();
             console.error(responseBody);
-            throw new Error('Failed to create candidate');
+            throw new Error(`Failed to create candidate ${response.status}`);
         }
+        let responseBody = await response.text();
+        console.log(responseBody);
         candidate = await response.json();
         await new Promise(resolve => setTimeout(resolve, 6000));
         console.log('else candidateId: ', candidateId);
